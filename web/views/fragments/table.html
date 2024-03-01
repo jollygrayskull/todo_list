@@ -1,0 +1,28 @@
+<table id="task_table">
+  <thead>
+  <tr>
+    <th scope="col">Title</th>
+    <th scope="col">Description</th>
+    <th scope="col">Priority</th>
+    <th scope="col">Category</th>
+    <th scope="col"></th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody id="tasks">
+  {{ range .Tasks }}
+  {{ if .Completed }}
+  <tr class="completed">
+    {{ else }}
+  <tr>
+    {{ end }}
+    <td>{{ .Title }}</td>
+    <td>{{ .Description }}</td>
+    <td>{{ .Priority }}</td>
+    <td>{{ .Category }}</td>
+    <td><input type="button" value="Complete" hx-post="/task/{{ .Id }}/complete" hx-target="closest tr" hx-swap="outerHTML"></td>
+    <td><input type="button" class="contrast" value="Delete" hx-delete="/task/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"></td>
+  </tr>
+  {{ end }}
+  </tbody>
+</table>

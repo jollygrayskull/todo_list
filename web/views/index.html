@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"/>
+    <title>Simple Todo List</title>
+
+    <!-- htmx -->
+    <script src="/static/js/htmx.min.js"></script>
+
+    <!-- Pico.css -->
+    <link rel="stylesheet" href="/static/css/pico.min.css"/>
+    <link rel="stylesheet" href="/static/css/basic.css"/>
+</head>
+
+<body>
+<header class="container">
+    <hgroup>
+        <h1>Todo List</h1>
+        <p>A simple todo list made with go, htmx and pico.css</p>
+    </hgroup>
+</header>
+<main class="container">
+    <section id="input">
+        <h2>New Task</h2>
+        <form hx-post="/task" hx-target="#task_table_body" hx-swap="beforeend">
+            <input
+                    type="text"
+                    name="title"
+                    placeholder="Title"
+                    aria-label="Title"
+                    required
+            />
+            <input
+                    type="text"
+                    name="description"
+                    placeholder="Description"
+                    aria-label="Description"
+                    required
+            />
+            <label for="priority"></label>
+            <select id="priority" name="priority" required>
+                <option value="" disabled selected hidden>Priority…</option>
+                <option value="0">High</option>
+                <option value="1">Medium</option>
+                <option value="2">Low</option>
+            </select>
+            <label for="category"></label>
+            <select id="category" name="category" required>
+                <option value="" disabled selected hidden>Category...</option>
+                <option value="Work">Work</option>
+                <option value="Household">Household</option>
+                <option value="Personal">Personal</option>
+            </select>
+            <button type="submit">Create</button>
+        </form>
+    </section>
+    <section>
+        <table id="task_table">
+            <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Category</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody id="task_table_body">
+            {{ range .Tasks }}
+            {{ if .Completed }}
+            <tr class="completed">
+            {{ else }}
+            <tr>
+            {{ end }}
+                <td>{{ .Title }}</td>
+                <td>{{ .Description }}</td>
+                <td>{{ .Priority.String }}</td>
+                <td>{{ .Category }}</td>
+                <td><input type="button" value="Complete" hx-post="/task/{{ .Id }}/complete" hx-target="closest tr" hx-swap="outerHTML"></td>
+                <td><input type="button" class="contrast" value="Delete" hx-delete="/task/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"></td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

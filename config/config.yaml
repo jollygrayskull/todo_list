@@ -1,0 +1,3 @@
+server_config:
+  bind_address: localhost
+  bind_port: 8080
